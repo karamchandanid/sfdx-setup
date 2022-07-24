@@ -5,7 +5,7 @@ inputs:
   user_name:
     required: true
     type: string
-  login_url:
+  instance_url:
     type: string
     default: https://login.salesforce.com
   password:
