@@ -54,7 +54,7 @@ runs:
           echo ""
           echo ::set-output name=valid_access_token::false
           echo "FALSE"
-        ele
+        else
           echo ::set-output name=valid_access_token::true
         fi
         echo "${{ steps.validate_access_token.outputs.valid_access_token }}"
