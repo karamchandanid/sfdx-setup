@@ -56,13 +56,15 @@ runs:
         else
           echo ::set-output name=valid_access_token::true
         fi
+        echo ${{ steps.validate_access_token.outputs.valid_access_token }}
     #
     # Installing Salesforce CLI
     - name: "Installing Salesforce CLI"
-      if: ${{ steps.validate_access_token.outputs.valid_access_token == true}}
+      # if: ${{ steps.validate_access_token.outputs.valid_access_token == true}}
       shell: bash
       # used to download files from the server even when the user has not logged on to the system and it can work in the background without hindering the current process
       run: |
+        echo ${{ steps.validate_access_token.outputs.valid_access_token }}
         wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
         mkdir ~/sfdx
         tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
