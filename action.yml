@@ -42,6 +42,7 @@ runs:
     # validating access_token
     - name: Validating User access_token
       id: validate_access_tooken
+      shell: bash
       run: |
         # Validating access_token if null then terminate the process
         if [[ -z ${{ steps.sfdc_auth.outputs.access_token }} ]] || [[ ${{ steps.sfdc_auth.outputs.access_token }} == "null" ]];
@@ -58,6 +59,7 @@ runs:
     # Installing Salesforce CLI
     - name: "Installing Salesforce CLI"
       if: ${{ steps.validate_access_tooken.outputs.valid_access_token }}
+      shell: bash
       # used to download files from the server even when the user has not logged on to the system and it can work in the background without hindering the current process
       run: |
         wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
@@ -69,6 +71,7 @@ runs:
     # Authenticate with access_token
     - id: sfdx_auth_store
       if: ${{ steps.validate_access_tooken.outputs.valid_access_token }}
+      shell: bash
       name: 'Authenticate org with Access Tokcen and setting up default username'
       run: |
         # exporting access_token config
