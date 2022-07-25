@@ -50,14 +50,12 @@ runs:
           echo "----------------------------------"
           echo "Error in salesforce authentication"
           echo "----------------------------------"
-          echo "$error ${{ steps.sfdc_auth.outputs.error }} : ${{ steps.sfdc_auth.outputs.error_description }}"
+          echo "Error : ${{ steps.sfdc_auth.outputs.error }} : ${{ steps.sfdc_auth.outputs.error_description }}"
           echo ""
           echo ::set-output name=valid_access_token::false
-          echo "FALSE"
         else
           echo ::set-output name=valid_access_token::true
         fi
-        echo "${{ steps.validate_access_token.outputs.valid_access_token }}"
     #
     # Installing Salesforce CLI
     - name: "Installing Salesforce CLI"
@@ -77,12 +75,20 @@ runs:
       shell: bash
       name: 'Authenticate org with Access Tokcen and setting up default username'
       run: |
-        echo ${{ steps.validate_access_token.outputs.valid_access_token }}
-        echo ${{ steps.validate_access_token.outputs.valid_access_token}}
         # exporting access_token config
         export SFDX_ACCESS_TOKEN=${{ steps.sfdc_auth.outputs.access_token }}
         echo $(sfdx auth:accesstoken:store --instanceurl ${{ steps.sfdc_auth.outputs.instance_url }} -s -a git-check --noprompt) > ./SFDX_AUTH_DETAILS.txt
         FILE_DATA=$(<./SFDX_AUTH_DETAILS.txt); SFDX_AUTH_USERNAME=$(echo $FILE_DATA| cut -d' ' -f 3);
-
-        # configuring defaultusername for further process
-        sfdx config:set defaultusername=$SFDX_AUTH_USERNAME -g
+        # validating username with response of sfdx auth
+        if [[ $SFDX_AUTH_USERNAME != ${{ inputs.user_name }} ]];
+        then
+          echo "----------------------------------"
+          echo "Error in SFDX configuration"
+          echo "----------------------------------"
+          echo "SFDX User configuration failed: $(<./SFDX_AUTH_DETAILS.txt)"
+          echo ""
+          exit 1;
+        else
+          # configuring defaultusername for further process
+          sfdx config:set defaultusername=$SFDX_AUTH_USERNAME -g
+        fi
