@@ -58,7 +58,7 @@ runs:
     #
     # Installing Salesforce CLI
     - name: "Installing Salesforce CLI"
-      if: ${{ steps.validate_access_token.outputs.valid_access_token == true}}
+      if: ${{ steps.validate_access_token.outputs.valid_access_token == "true"}}
       shell: bash
       # used to download files from the server even when the user has not logged on to the system and it can work in the background without hindering the current process
       run: |
@@ -70,15 +70,15 @@ runs:
     #
     # Authenticate with access_token
     - id: sfdx_auth_store
-      if: ${{ steps.validate_access_token.outputs.valid_access_token == true}}
+      if: ${{ steps.validate_access_token.outputs.valid_access_token == "true"}}
       shell: bash
       name: 'Authenticate org with Access Tokcen and setting up default username'
       run: |
         echo ${{ steps.validate_access_token.outputs.valid_access_token }}
-        echo ${{ steps.validate_access_token.outputs.valid_access_token == true }}
+        echo ${{ steps.validate_access_token.outputs.valid_access_token == "true" }}
         echo ${{ steps.validate_access_token.outputs.valid_access_token == "true" }}
         echo ${{ steps.validate_access_token.outputs.valid_access_token == "false" }}
-        echo ${{ steps.validate_access_token.outputs.valid_access_token == false }}
+        echo ${{ steps.validate_access_token.outputs.valid_access_token == "false" }}
         # exporting access_token config
         export SFDX_ACCESS_TOKEN=${{ steps.sfdc_auth.outputs.access_token }}
         echo $(sfdx auth:accesstoken:store --instanceurl ${{ steps.sfdc_auth.outputs.instance_url }} -s -a git-check --noprompt) > ./SFDX_AUTH_DETAILS.txt
