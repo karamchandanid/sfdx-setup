@@ -107,3 +107,7 @@ runs:
           echo ::set-output name=error::${{ steps.sfdc_auth.outputs.error }}
           echo ::set-output name=error_description::${{ steps.sfdc_auth.outputs.error_description }}
         fi
+
+branding:
+  icon: 'terminal'
+  color: 'blue'
