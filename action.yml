@@ -1,11 +1,11 @@
-name: 'DK Git Salesforce CLI Setup'
-description: 'Configuring Salesforce CLI with user details'
+name: 'Salesforce CLI Setup'
+description: 'Configure Salesforce CLI with user details'
 
 inputs:
   user_name:
     required: true
     type: string
-  instance_url:
+  login_url:
     type: string
     default: https://login.salesforce.com
   password:
@@ -17,6 +17,7 @@ inputs:
   sfdc_client_secret:
     required: true
     description: Consumer Secret of a connected App created within salesforce
+
 # Mapping the workflow outputs with job outputs
 outputs:
   sfdx_configured:
@@ -28,6 +29,7 @@ outputs:
   error_description:
     description: "The second output string"
     value: ${{ steps.sfdx_auth_store.outputs.error_description }}
+
 runs:
   using: "composite"
   steps:
@@ -40,7 +42,7 @@ runs:
         sfdc_client_secret: ${{ inputs.sfdc_client_secret }}
         user_name: ${{ inputs.user_name }}
         password: ${{ inputs.password }}
-        login_url: ${{ inputs.instance_url}}
+        login_url: ${{ inputs.login_url}}
     #
     # validating access_token
     - name: Validating User access_token
@@ -59,14 +61,12 @@ runs:
         else
           echo ::set-output name=valid_access_token::true
         fi
-        echo ${{ steps.validate_access_token.outputs.valid_access_token }}
     #
     # Installing Salesforce CLI
     - name: "Installing Salesforce CLI"
       shell: bash
       # used to download files from the server even when the user has not logged on to the system and it can work in the background without hindering the current process
       run: |
-        echo ${{ steps.validate_access_token.outputs.valid_access_token }}
         if [[ ${{ steps.validate_access_token.outputs.valid_access_token }} == 'true' ]]
         then
           wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
@@ -82,7 +82,6 @@ runs:
       shell: bash
       name: 'Authenticate org with Access Tokcen and setting up default username'
       run: |
-        echo ${{ steps.validate_access_token.outputs.valid_access_token }}
         if [[ ${{ steps.validate_access_token.outputs.valid_access_token }} == 'true' ]]
         then
           # exporting access_token config
