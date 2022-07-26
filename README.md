@@ -31,7 +31,7 @@ jobs:
     steps:
       # use GitHub Action to configure SFDX.
       - name: Salesforce CLI Setup
-        uses: karamchandanid/sfdx-setup@v21
+        uses: karamchandanid/sfdx-setup@v1
         id: sfdx_setup
         with:
           sfdc_client_id: ${{ secrets.SFDC_CLIENT_ID }}
