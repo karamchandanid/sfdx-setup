@@ -19,15 +19,15 @@ inputs:
     description: Consumer Secret of a connected App created within salesforce
 # Mapping the workflow outputs with job outputs
 outputs:
-  # sfdx_configured:
-  #   description: "The second output string"
-  #   value: ${{ steps.sfdc_auth.outputs.error }}
+  sfdx_configured:
+    description: "The second output string"
+    value: ${{ steps.sfdx_auth_store.outputs.sfdx_configured }}
   error:
     description: "The second output string"
-    value: ${{ steps.sfdc_auth.outputs.error }}
+    value: ${{ steps.sfdx_auth_store.outputs.error }}
   error_description:
     description: "The second output string"
-    value: ${{ steps.sfdc_auth.outputs.error_description }}
+    value: ${{ steps.sfdx_auth_store.outputs.error_description }}
 runs:
   using: "composite"
   steps:
@@ -97,8 +97,14 @@ runs:
             echo "----------------------------------"
             echo "SFDX User configuration failed: $(<./SFDX_AUTH_DETAILS.txt)"
             echo ""
+            echo ::set-output name=sfdx_configured::false
           else
             # configuring defaultusername for further process
             sfdx config:set defaultusername=$SFDX_AUTH_USERNAME -g
+            echo ::set-output name=sfdx_configured::true
           fi
+        else
+          echo ::set-output name=sfdx_configured::false
+          echo ::set-output name=error::${{ steps.sfdc_auth.outputs.error }}
+          echo ::set-output name=error_description::${{ steps.sfdc_auth.outputs.error_description }}
         fi
