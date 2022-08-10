@@ -36,7 +36,7 @@ runs:
     # Authenticating user to get access_token using existing GitHub action: 
     - id: sfdc_auth
       name: Salesforce User Authentication
-      uses: karamchandanid/sfdc-credentials-auth@v2
+      uses: karamchandanid/sfdc-credentials-auth@v3
       with:
         sfdc_client_id: ${{ inputs.sfdc_client_id }}
         sfdc_client_secret: ${{ inputs.sfdc_client_secret }}
